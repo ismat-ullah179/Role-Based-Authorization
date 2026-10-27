@@ -116,6 +116,14 @@ const login = async (req, res) => {
   }
 };
 
+// admin route
+const admin = (req, res) => {
+  return res.status(200).json({
+    message: "Welcome to Admin Dashboard",
+    user: req.user,
+  });
+};
+
 // Users list
 const getAllUsers = async (req, res) => {
   try {
@@ -132,12 +140,39 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// admin route
-const admin = (req, res) => {
-  return res.status(200).json({
-    message: "Welcome to Admin Dashboard",
-    user: req.user,
-  });
+// getUserById
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(404).json({
+        message: "Please Find By ID",
+      });
+    }
+
+    const user = await User.findById(id).select("-password"); // -pass meant exclude pass
+    if (!user) {
+      return res.status(404).json({
+        message: "User Not Found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "User Found",
+      user,
+    });
+  } catch (error) {
+    console.error("Get User By ID Error:", error);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid user ID",
+      });
+    }
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
 };
 
 // update user
@@ -347,4 +382,5 @@ module.exports = {
   admin,
   deleteUser,
   updateUser,
+  getUserById,
 };

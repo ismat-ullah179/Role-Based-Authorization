@@ -12,6 +12,7 @@ const {
   admin,
   deleteUser,
   updateUser,
+  getUserById,
 } = require("../controllers/authController");
 const User = require("../models/User");
 const router = express.Router();
@@ -23,6 +24,7 @@ router.post("/Refresh-Token", refreshAccessToken);
 router.post("/logout", logout);
 router.delete("/users/:id", authMiddleware, authorizeRole("admin"), deleteUser);
 router.put("/users/:id", authMiddleware, authorizeRole("admin"), updateUser);
+router.post("/users/:id", authMiddleware, authorizeRole("admin"), getUserById);
 
 router.get("/users", authMiddleware, authorizeRole("admin"), getAllUsers);
 
